@@ -25,7 +25,7 @@
                 <li><a href="#home" class="nav-link">Home</a></li>
                 <li><a href="#jobs" class="nav-link">Jobs</a></li>
                 <li><a href="#skills" class="nav-link">Skills</a></li>
-                <li><a href="#benefits" class="nav-link">Benefits</a></li>
+                <li><a href="pages/benefits.html" class="nav-link">Benefits</a></li>
                 <li><a href="#register" class="nav-link register-btn">Register</a></li>
             </ul>
             <div class="hamburger" id="hamburger">
@@ -50,6 +50,9 @@
                     <button class="btn btn-secondary" onclick="showJobPost()">
                         <i class="fas fa-briefcase"></i> Post Job
                     </button>
+                    <a href="pages/benefits.html" class="btn btn-outline">
+                        <i class="fas fa-gift"></i> View Benefits
+                    </a>
                 </div>
             </div>
             <div class="hero-stats">
@@ -145,33 +148,42 @@
         <div class="container">
             <h2>Government Benefits & Financial Services</h2>
             <div class="benefits-grid">
-                <div class="benefit-card">
+                <div class="benefit-card" data-category="healthcare" onclick="navigateToBenefits('healthcare')">
                     <i class="fas fa-heartbeat"></i>
                     <h3>Ayushman Bharat</h3>
                     <p>Health insurance up to ₹5 lakh</p>
-                    <button class="btn btn-outline" onclick="checkBenefitEligibility('ayushman')">Check
+                    <button class="btn btn-outline"
+                        onclick="event.stopPropagation(); checkBenefitEligibility('ayushman')">Check
                         Eligibility</button>
                 </div>
-                <div class="benefit-card">
+                <div class="benefit-card" data-category="insurance" onclick="navigateToBenefits('insurance')">
                     <i class="fas fa-shield-alt"></i>
                     <h3>PMSBY</h3>
                     <p>Accidental insurance coverage</p>
-                    <button class="btn btn-outline" onclick="checkBenefitEligibility('pmsby')">Check
+                    <button class="btn btn-outline"
+                        onclick="event.stopPropagation(); checkBenefitEligibility('pmsby')">Check
                         Eligibility</button>
                 </div>
-                <div class="benefit-card">
+                <div class="benefit-card" data-category="financial" onclick="navigateToBenefits('financial')">
                     <i class="fas fa-piggy-bank"></i>
                     <h3>Micro Credit</h3>
                     <p>Small loans based on work history</p>
-                    <button class="btn btn-outline" onclick="checkBenefitEligibility('microCredit')">Check
+                    <button class="btn btn-outline"
+                        onclick="event.stopPropagation(); checkBenefitEligibility('microCredit')">Check
                         Eligibility</button>
                 </div>
-                <div class="benefit-card">
+                <div class="benefit-card" data-category="business" onclick="navigateToBenefits('business')">
                     <i class="fas fa-wallet"></i>
                     <h3>Digital Wallet</h3>
                     <p>Secure payments and savings</p>
-                    <button class="btn btn-outline" onclick="setupWallet()">Setup Wallet</button>
+                    <button class="btn btn-outline" onclick="event.stopPropagation(); setupWallet()">Setup
+                        Wallet</button>
                 </div>
+            </div>
+            <div class="benefits-cta">
+                <a href="pages/benefits.html" class="btn btn-primary">
+                    <i class="fas fa-gift"></i> View All Benefits
+                </a>
             </div>
         </div>
     </section>
@@ -292,6 +304,15 @@
 
     <!-- 🔗 Blockchain Integration Script -->
     <script>
+        // Navigation function for benefits
+        function navigateToBenefits(category = '') {
+            if (category) {
+                window.location.href = `benefits.html#${category}`;
+            } else {
+                window.location.href = 'benefits.html';
+            }
+        }
+
         // Blockchain UI Integration Functions
         async function verifySkillOnBlockchain() {
             const skillName = document.getElementById('skill-name').value;
@@ -343,80 +364,153 @@
                 alert('Please enter certificate ID');
                 return;
             }
+                        const result = verifyCertificate(certId);
 
-            const result = verifyCertificate(certId);
+                                if (result.valid) {
+                                    showNotification('✅ Certificate is valid and verified on blockchain!', 'success');
+                                    console.log('Certificate details:', result);
+                                } else {
+                                    showNotification('❌ Certificate verification failed: ' + result.message, 'error');
+                                }
+                            }
 
-            if (result.valid) {
-                showNotification('✅ Certificate is valid and verified on blockchain!', 'success');
-                console.log('Certificate details:', result);
-            } else {
-                showNotification('❌ Certificate verification failed: ' + result.message, 'error');
-            }
-        }
+                            function checkBenefitEligibility(benefitType) {
+                                const user = JSON.parse(localStorage.getItem('udyami_user') || '{}');
+                                if (!user.phone) {
+                                    alert('Please login first');
+                                    return;
+                                }
 
-        function checkBenefitEligibility(benefitType) {
-            const user = JSON.parse(localStorage.getItem('udyami_user') || '{}');
-            if (!user.phone) {
-                alert('Please login first');
-                return;
-            }
+                                const eligibility = udyamiBlockchain.checkBenefitEligibility(user.phone);
 
-            const eligibility = udyamiBlockchain.checkBenefitEligibility(user.phone);
+                                let message = '';
+                                let eligible = false;
 
-            let message = '';
-            let eligible = false;
+                                switch (benefitType) {
+                                    case 'ayushman':
+                                        eligible = eligibility.ayushmanBharat;
+                                        message = eligible ? 'You are eligible for Ayushman Bharat!' : 'Not eligible - income too high';
+                                        break;
+                                    case 'pmsby':
+                                        eligible = eligibility.pmsby;
+                                        message = eligible ? 'You are eligible for PMSBY!' : 'Not eligible - age criteria not met';
+                                        break;
+                                    case 'microCredit':
+                                        eligible = eligibility.microCredit;
+                                        message = eligible ? 'You are eligible for Micro Credit!' : 'Not eligible - sufficient balance';
+                                        break;
+                                }
 
-            switch (benefitType) {
-                case 'ayushman':
-                    eligible = eligibility.ayushmanBharat;
-                    message = eligible ? 'You are eligible for Ayushman Bharat!' : 'Not eligible - income too high';
-                    break;
-                case 'pmsby':
-                    eligible = eligibility.pmsby;
-                    message = eligible ? 'You are eligible for PMSBY!' : 'Not eligible - age criteria not met';
-                    break;
-                case 'microCredit':
-                    eligible = eligibility.microCredit;
-                    message = eligible ? 'You are eligible for Micro Credit!' : 'Not eligible - sufficient balance';
-                    break;
-            }
+                                showNotification(message, eligible ? 'success' : 'error');
+                            }
 
-            showNotification(message, eligible ? 'success' : 'error');
-        }
+                            function setupWallet() {
+                                const user = JSON.parse(localStorage.getItem('udyami_user') || '{}');
+                                if (!user.phone) {
+                                    alert('Please login first');
+                                    return;
+                                }
 
-        function setupWallet() {
-            const user = JSON.parse(localStorage.getItem('udyami_user') || '{}');
-            if (!user.phone) {
-                alert('Please login first');
-                return;
-            }
+                                const wallet = udyamiBlockchain.getWallet(user.phone);
+                                showNotification(`Wallet setup complete! Balance: ₹${wallet.balance}`, 'success');
+                            }
 
-            const wallet = udyamiBlockchain.getWallet(user.phone);
-            showNotification(`Wallet setup complete! Balance: ₹${wallet.balance}`, 'success');
-        }
+                            function loadCertificates() {
+                                const user = JSON.parse(localStorage.getItem('udyami_user') || '{}');
+                                if (!user.phone) return;
 
-        function loadCertificates() {
-            const user = JSON.parse(localStorage.getItem('udyami_user') || '{}');
-            if (!user.phone) return;
+                                const certificatesList = document.getElementById('certificates-list');
+                                const userStats = getUserStats(user.phone);
 
-            const certificatesList = document.getElementById('certificates-list');
-            const userStats = getUserStats(user.phone);
-
-            certificatesList.innerHTML = `
+                                certificatesList.innerHTML = `
                 <div class="certificate-summary">
                     <h4>📜 Certificates Earned: ${userStats.certificatesEarned}</h4>
                     <h4>💰 Total Earnings: ₹${userStats.totalEarnings}</h4>
                     <h4>✅ Contracts Completed: ${userStats.contractsCompleted}</h4>
                 </div>
             `;
+                            }
+
+                            // Initialize blockchain on page load
+                            document.addEventListener('DOMContentLoaded', function () {
+                                console.log('🔗 Blockchain Status:', getBlockchainStats());
+                                loadCertificates();
+
+                                // Add click handlers for benefit cards
+                                const benefitCards = document.querySelectorAll('.benefit-card');
+                                benefitCards.forEach(card => {
+                                    card.style.cursor = 'pointer';
+                                    card.addEventListener('click', function (e) {
+                                        // Don't navigate if clicking on a button
+                                        if (e.target.tagName === 'BUTTON') {
+                                            return;
+                                        }
+                                        const category = this.dataset.category;
+                                        if (category) {
+                                            navigateToBenefits(category);
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
+    
+    <style>
+        /* Additional CSS for Benefits Integration */
+        .benefits-cta {
+            text-align: center;
+            margin-top: 40px;
         }
-
-        // Initialize blockchain on page load
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('🔗 Blockchain Status:', getBlockchainStats());
-            loadCertificates();
-        });
-    </script>
-</body>
-
-</html>
+    
+        .benefit-card {
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+    
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+    
+        .benefit-card[data-category="healthcare"] {
+            border-left: 4px solid #e91e63;
+        }
+    
+        .benefit-card[data-category="insurance"] {
+            border-left: 4px solid #9c27b0;
+        }
+    
+        .benefit-card[data-category="financial"] {
+            border-left: 4px solid #4caf50;
+        }
+    
+        .benefit-card[data-category="business"] {
+            border-left: 4px solid #ff9800;
+        }
+    
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+    
+        .hero-buttons .btn {
+            min-width: 150px;
+        }
+    
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+    
+            .hero-buttons .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+    </body>
+    
+    </html>
