@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Udyami - Empowering India's Workforce</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <!-- 🔗 Blockchain Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/elliptic/6.5.4/elliptic.min.js"></script>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-briefcase"></i>
+                <span>Udyami</span>
+            </div>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#jobs" class="nav-link">Jobs</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#benefits" class="nav-link">Benefits</a></li>
+                <li><a href="#register" class="nav-link register-btn">Register</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Empowering India's <span class="highlight">400 Million</span> Gig Workers</h1>
+                <p>Connect with verified opportunities, get skilled certified on blockchain, negotiate fair wages, and
+                    access benefits</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="showRegister()">
+                        <i class="fas fa-user-plus"></i> Join as Worker
+                    </button>
+                    <button class="btn btn-secondary" onclick="showJobPost()">
+                        <i class="fas fa-briefcase"></i> Post Job
+                    </button>
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <h3>400M+</h3>
+                    <p>Gig Workers</p>
+                </div>
+                <div class="stat-item">
+                    <h3>70%</h3>
+                    <p>Irregular Income</p>
+                </div>
+                <div class="stat-item">
+                    <h3>85%</h3>
+                    <p>No Social Security</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Jobs Section -->
+    <section id="jobs" class="jobs-section">
+        <div class="container">
+            <h2>Available Jobs</h2>
+
+            <!-- Search and Filter -->
+            <div class="search-filter">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="job-search" placeholder="Search jobs..." onkeyup="filterJobs()">
+                </div>
+                <select id="skill-filter" onchange="filterJobs()">
+                    <option value="">All Skills</option>
+                    <option value="plumbing">Plumbing</option>
+                    <option value="electrical">Electrical</option>
+                    <option value="carpentry">Carpentry</option>
+                    <option value="delivery">Delivery</option>
+                    <option value="cleaning">Cleaning</option>
+                </select>
+            </div>
+
+            <!-- Jobs Grid -->
+            <div class="jobs-grid" id="jobs-grid">
+                <!-- Jobs will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="skills-section">
+        <div class="container">
+            <h2>🔗 Blockchain Skill Verification</h2>
+            <div class="skills-content">
+                <div class="skill-upload">
+                    <h3>Upload Your Work Sample</h3>
+                    <div class="upload-area" id="upload-area">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Drag & drop your work photos/videos here</p>
+                        <input type="file" id="file-input" accept="image/*,video/*" multiple>
+                    </div>
+
+                    <!-- 🔗 Blockchain Verification Form -->
+                    <div class="blockchain-verification">
+                        <input type="text" id="skill-name" placeholder="Enter skill name (e.g., Plumbing)" required>
+                        <textarea id="work-description" placeholder="Describe your work experience and samples uploaded"
+                            required></textarea>
+                        <button class="btn btn-primary" onclick="verifySkillOnBlockchain()" id="verify-btn">
+                            <i class="fas fa-certificate"></i> Verify on Blockchain
+                        </button>
+                    </div>
+                </div>
+
+                <div class="skill-certificates">
+                    <h3>Your Blockchain Certificates</h3>
+                    <div id="certificates-list">
+                        <!-- Certificates will be loaded here -->
+                    </div>
+
+                    <!-- 🔗 Certificate Verification -->
+                    <div class="certificate-verification">
+                        <h4>Verify Certificate</h4>
+                        <input type="text" id="cert-id" placeholder="Enter certificate ID">
+                        <button class="btn btn-outline" onclick="verifyCertificateOnBlockchain()">
+                            <i class="fas fa-search"></i> Verify Certificate
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="benefits" class="benefits-section">
+        <div class="container">
+            <h2>Government Benefits & Financial Services</h2>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <i class="fas fa-heartbeat"></i>
+                    <h3>Ayushman Bharat</h3>
+                    <p>Health insurance up to ₹5 lakh</p>
+                    <button class="btn btn-outline" onclick="checkBenefitEligibility('ayushman')">Check
+                        Eligibility</button>
+                </div>
+                <div class="benefit-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>PMSBY</h3>
+                    <p>Accidental insurance coverage</p>
+                    <button class="btn btn-outline" onclick="checkBenefitEligibility('pmsby')">Check
+                        Eligibility</button>
+                </div>
+                <div class="benefit-card">
+                    <i class="fas fa-piggy-bank"></i>
+                    <h3>Micro Credit</h3>
+                    <p>Small loans based on work history</p>
+                    <button class="btn btn-outline" onclick="checkBenefitEligibility('microCredit')">Check
+                        Eligibility</button>
+                </div>
+                <div class="benefit-card">
+                    <i class="fas fa-wallet"></i>
+                    <h3>Digital Wallet</h3>
+                    <p>Secure payments and savings</p>
+                    <button class="btn btn-outline" onclick="setupWallet()">Setup Wallet</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Modal -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Join Udyami</h2>
+
+            <div class="registration-steps">
+                <!-- Step 1: User Type -->
+                <div class="step active" id="step1">
+                    <h3>I am a...</h3>
+                    <div class="user-type-selection">
+                        <div class="user-type-card" onclick="selectUserType('worker')">
+                            <i class="fas fa-user"></i>
+                            <h4>Worker</h4>
+                            <p>Looking for gig work opportunities</p>
+                        </div>
+                        <div class="user-type-card" onclick="selectUserType('employer')">
+                            <i class="fas fa-briefcase"></i>
+                            <h4>Employer</h4>
+                            <p>Need skilled workers for projects</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Phone Verification -->
+                <div class="step" id="step2">
+                    <h3>Verify Your Phone</h3>
+                    <div class="phone-input">
+                        <input type="tel" id="phone-number" placeholder="Enter phone number" maxlength="10">
+                        <button class="btn btn-primary" onclick="sendOTP()">Send OTP</button>
+                    </div>
+                    <div class="otp-input" id="otp-section" style="display:none;">
+                        <input type="text" id="otp-code" placeholder="Enter 6-digit OTP" maxlength="6">
+                        <button class="btn btn-primary" onclick="verifyOTP()">Verify</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Profile Setup -->
+                <div class="step" id="step3">
+                    <h3>Complete Your Profile</h3>
+                    <form id="profile-form">
+                        <input type="text" id="full-name" placeholder="Full Name" required>
+                        <input type="text" id="location" placeholder="Location" required>
+
+                        <div id="worker-fields" style="display:none;">
+                            <h4>Select Your Skills</h4>
+                            <div class="skills-selection">
+                                <div class="skill-tag" onclick="toggleSkill(this)" data-skill="plumbing">
+                                    <i class="fas fa-wrench"></i> Plumbing
+                                </div>
+                                <div class="skill-tag" onclick="toggleSkill(this)" data-skill="electrical">
+                                    <i class="fas fa-bolt"></i> Electrical
+                                </div>
+                                <div class="skill-tag" onclick="toggleSkill(this)" data-skill="carpentry">
+                                    <i class="fas fa-hammer"></i> Carpentry
+                                </div>
+                                <div class="skill-tag" onclick="toggleSkill(this)" data-skill="delivery">
+                                    <i class="fas fa-motorcycle"></i> Delivery
+                                </div>
+                                <div class="skill-tag" onclick="toggleSkill(this)" data-skill="cleaning">
+                                    <i class="fas fa-broom"></i> Cleaning
+                                </div>
+                            </div>
+                            <select id="experience-level">
+                                <option value="">Experience Level</option>
+                                <option value="beginner">Beginner (0-2 years)</option>
+                                <option value="intermediate">Intermediate (2-5 years)</option>
+                                <option value="expert">Expert (5+ years)</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Complete Registration</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Post Modal -->
+    <div id="job-post-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeJobModal()">&times;</span>
+            <h2>Post a Job</h2>
+            <form id="job-form">
+                <input type="text" id="job-title" placeholder="Job Title" required>
+                <textarea id="job-description" placeholder="Job Description" required></textarea>
+                <select id="job-skill" required>
+                    <option value="">Required Skill</option>
+                    <option value="plumbing">Plumbing</option>
+                    <option value="electrical">Electrical</option>
+                    <option value="carpentry">Carpentry</option>
+                    <option value="delivery">Delivery</option>
+                    <option value="cleaning">Cleaning</option>
+                </select>
+                <input type="number" id="job-budget" placeholder="Budget (₹)" required>
+                <input type="text" id="job-location" placeholder="Location" required>
+                <label class="checkbox-container">
+                    <input type="checkbox" id="job-urgent">
+                    <span class="checkmark"></span>
+                    Mark as Urgent
+                </label>
+                <button type="submit" class="btn btn-primary">Post Job</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <script src="data/mockData.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/blockchain.js"></script>
+    <script src="js/app.js"></script>
+
+    <!-- 🔗 Blockchain Integration Script -->
+    <script>
+        // Blockchain UI Integration Functions
+        async function verifySkillOnBlockchain() {
+            const skillName = document.getElementById('skill-name').value;
+            const workDescription = document.getElementById('work-description').value;
+            const files = document.getElementById('file-input').files;
+
+            if (!skillName || !workDescription) {
+                alert('Please enter skill name and work description');
+                return;
+            }
+
+            const user = JSON.parse(localStorage.getItem('udyami_user') || '{}');
+            if (!user.phone) {
+                alert('Please login first');
+                return;
+            }
+
+            const verifyBtn = document.getElementById('verify-btn');
+            verifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+            verifyBtn.disabled = true;
+
+            try {
+                // Simulate file processing
+                let workSample = workDescription;
+                if (files.length > 0) {
+                    workSample += ` (${files.length} files uploaded)`;
+                }
+
+                const result = await verifySkill(skillName, workSample);
+
+                if (result && result.verified) {
+                    showNotification(`✅ Skill verified! Score: ${result.score}%`, 'success');
+                    loadCertificates();
+                } else {
+                    showNotification(`❌ Verification failed. Score: ${result ? result.score : 'N/A'}%`, 'error');
+                }
+            } catch (error) {
+                showNotification('Error during verification: ' + error.message, 'error');
+            } finally {
+                verifyBtn.innerHTML = '<i class="fas fa-certificate"></i> Verify on Blockchain';
+                verifyBtn.disabled = false;
+            }
+        }
+
+        function verifyCertificateOnBlockchain() {
+            const certId = document.getElementById('cert-id').value;
+
+            if (!certId) {
+                alert('Please enter certificate ID');
+                return;
+            }
+
+            const result = verifyCertificate(certId);
+
+            if (result.valid) {
+                showNotification('✅ Certificate is valid and verified on blockchain!', 'success');
+                console.log('Certificate details:', result);
+            } else {
+                showNotification('❌ Certificate verification failed: ' + result.message, 'error');
+            }
+        }
+
+        function checkBenefitEligibility(benefitType) {
+            const user = JSON.parse(localStorage.getItem('udyami_user') || '{}');
+            if (!user.phone) {
+                alert('Please login first');
+                return;
+            }
+
+            const eligibility = udyamiBlockchain.checkBenefitEligibility(user.phone);
+
+            let message = '';
+            let eligible = false;
+
+            switch (benefitType) {
+                case 'ayushman':
+                    eligible = eligibility.ayushmanBharat;
+                    message = eligible ? 'You are eligible for Ayushman Bharat!' : 'Not eligible - income too high';
+                    break;
+                case 'pmsby':
+                    eligible = eligibility.pmsby;
+                    message = eligible ? 'You are eligible for PMSBY!' : 'Not eligible - age criteria not met';
+                    break;
+                case 'microCredit':
+                    eligible = eligibility.microCredit;
+                    message = eligible ? 'You are eligible for Micro Credit!' : 'Not eligible - sufficient balance';
+                    break;
+            }
+
+            showNotification(message, eligible ? 'success' : 'error');
+        }
+
+        function setupWallet() {
+            const user = JSON.parse(localStorage.getItem('udyami_user') || '{}');
+            if (!user.phone) {
+                alert('Please login first');
+                return;
+            }
+
+            const wallet = udyamiBlockchain.getWallet(user.phone);
+            showNotification(`Wallet setup complete! Balance: ₹${wallet.balance}`, 'success');
+        }
+
+        function loadCertificates() {
+            const user = JSON.parse(localStorage.getItem('udyami_user') || '{}');
+            if (!user.phone) return;
+
+            const certificatesList = document.getElementById('certificates-list');
+            const userStats = getUserStats(user.phone);
+
+            certificatesList.innerHTML = `
+                <div class="certificate-summary">
+                    <h4>📜 Certificates Earned: ${userStats.certificatesEarned}</h4>
+                    <h4>💰 Total Earnings: ₹${userStats.totalEarnings}</h4>
+                    <h4>✅ Contracts Completed: ${userStats.contractsCompleted}</h4>
+                </div>
+            `;
+        }
+
+        // Initialize blockchain on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('🔗 Blockchain Status:', getBlockchainStats());
+            loadCertificates();
+        });
+    </script>
+</body>
+
+</html>
